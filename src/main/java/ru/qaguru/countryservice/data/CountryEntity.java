@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
+import ru.qaguru.countryservice.model.Country;
 
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
 @Getter
 @Setter
+@Entity
 @Table(name = "country")
 public class CountryEntity {
     @Id
@@ -38,5 +39,12 @@ public class CountryEntity {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    static public CountryEntity fromJson(Country json) {
+        CountryEntity countryEntity = new CountryEntity();
+        countryEntity.setCountryName(json.countryName());
+        countryEntity.setCountryCode(json.countryCode());
+        return countryEntity;
     }
 }

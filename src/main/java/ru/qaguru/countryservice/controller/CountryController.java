@@ -1,9 +1,8 @@
 package ru.qaguru.countryservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.qaguru.countryservice.model.Country;
 import ru.qaguru.countryservice.service.CountryService;
 
@@ -21,7 +20,28 @@ public class CountryController {
     }
 
     @GetMapping
-    public List<Country> getAllCountry() {
+    public List<Country> getAllCountries() {
         return countryService.getAllCountries();
+    }
+
+    @PostMapping("/addCountry")
+    public Country addCountry(@RequestBody Country country) {
+        countryService.addCountry(country);
+        return country;
+    }
+
+    @PatchMapping("/{countryCode}/changeName")
+    public ResponseEntity<Object> changeName(
+            @PathVariable String countryCode,
+            @RequestParam String newName
+    ) {
+        try {
+            return ResponseEntity.ok(countryService.changeName(countryCode, newName));
+        } catch (IllegalStateException exception) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(exception.getMessage());
+        }
+
     }
 }

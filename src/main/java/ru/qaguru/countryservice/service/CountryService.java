@@ -25,4 +25,21 @@ public class CountryService {
                 .map(Country::fromEntity)
                 .toList();
     }
+
+    public void addCountry(Country country) {
+        countryRepository.save(
+                CountryEntity.fromJson(country)
+        );
+    }
+
+    public Country changeName(String countryCode, String newName) {
+        CountryEntity country = countryRepository.findByCountryCode(countryCode);
+        if (country == null) {
+            throw new IllegalStateException("Country " + countryCode + " not found");
+        } else {
+            country.setCountryName(newName);
+            countryRepository.save(country);
+            return Country.fromEntity(country);
+        }
+    }
 }
